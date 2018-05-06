@@ -5,7 +5,7 @@ const sampleData =require('../sampleData');
 
 const entriesRouter = express.Router();
 
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://admin:test1234@ds161529.mlab.com:61529/journal-entries';
 const dbName = 'journal-entries';
 
 function router() {
