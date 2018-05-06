@@ -27,7 +27,7 @@ app.get('/entries', (req, res) => {
     let client;
     let response;
     try {
-      client = await MongoClient.connect(url);
+      client = await MongoClient.connect(process.env.MONGODB_URI);
       debug('Connected correctly to database');
   
       const db = client.db(dbName);
@@ -121,6 +121,7 @@ app.delete('/deleteEntry', (req, res) => {
   }())
 });
 
-app.listen(3001, () => {
-  debug(`Listening on port 3001`);
+const server = app.listen(process.env.PORT || 8080, () => {
+  const port = server.address().port;
+  debug(`Listening on port ${port}`);
 });
