@@ -9,7 +9,7 @@ const app = express();
 
 app.use(morgan('tiny'));
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   next();
@@ -22,7 +22,7 @@ const url = 'mongodb://admin:test1234@ds161529.mlab.com:61529/journal-entries';
 const dbName = 'journal-entries';
 
 app.get('/entries', (req, res) => {
-  debug(req.body);
+  console.log(req.body);
   (async function mongo() {
     let client;
     let response;
