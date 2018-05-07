@@ -1,7 +1,7 @@
 module.exports = [
-  { name: 'entry 1', date: '2018-04-01', notes: 'these are some notes' },
-  { name: 'entry 2', date: '2018-05-02', notes: 'these are two notes' },
-  { name: 'entry 3', date: '2018-06-03', notes: 'these are three notes' },
-  { name: 'entry 4', date: '2018-07-04', notes: 'these are four notes' },
-  { name: 'entry 5', date: '2018-08-05', notes: 'these are five notes' },
+  { name: 'entry 1', createdDate: new Date('2018-01-01'), notes: 'Entry number 1' },
+  { name: 'entry 2', createdDate: new Date('2018-02-02'), notes: 'these are two notes' },
+  { name: 'entry 3', createdDate: new Date('2018-03-03'), notes: 'these are three notes' },
+  { name: 'entry 4', createdDate: new Date('2018-04-04'), notes: 'these are four notes' },
+  { name: 'entry 5', createdDate: new Date('2018-05-05'), notes: 'these are five notes' },
 ];

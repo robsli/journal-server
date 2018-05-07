@@ -1,9 +1,13 @@
 const bodyParser = require('body-parser');
 const debug = require('debug')('app');
 const express = require('express');
-const morgan = require('morgan');
 const { MongoClient, ObjectID } = require('mongodb');
+const mongoose = require('mongoose');
+const morgan = require('morgan');
 const sampleData =require('./src/sampleData');
+
+const Entry = require('./src/models/Entry');
+const User = require('./src/models/User');
 
 const app = express();
 
@@ -17,109 +21,110 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
-const url = 'mongodb://admin:test1234@ds161529.mlab.com:61529/journal-entries';
+const localUrl = 'mongodb://localhost:27017';
+const mlabUrl = 'mongodb://admin:test1234@ds161529.mlab.com:61529/journal-entries';
 const dbName = 'journal-entries';
 
+mongoose.connect(mlabUrl);
+mongoose.Promise = global.Promise;
+const mongooseDb = mongoose.connection
+mongooseDb.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+// const entriesRouter = require('./src/routes/entriesRouter');
+// app.use('/', entriesRouter);
+
 app.get('/entries', (req, res) => {
-  console.log(req.body);
-  (async function mongo() {
-    let client;
+  (async function mongoose() {
     let response;
     try {
-      client = await MongoClient.connect(process.env.MONGODB_URI);
-      debug('Connected correctly to database');
-  
-      const db = client.db(dbName);
-      const collection = db.collection('entries');
+      response = await Entry.find();
 
-      if (await collection.count() === 0) {
-        response = await collection.insertMany(sampleData);
-        // debug('Added sample data');
-        // debug(response);
+      if (response.length < 1) {
+        const insertSampleData = await Entry.create(sampleData)
+          .then((resp) => {
+            res.json(resp);
+          })
+          .catch((error) => {
+            debug(error.stack);
+            res.status(500).error(error);
+          })
+      } else {
+        res.status(200).json(response);
       }
-      response = await collection.find({}).toArray();
-      res.json(response);
     } catch (err) {
       debug(err.stack);
-      client.close();
     }
-    client.close();
   }());
 });
 
 app.post('/addEntry', (req, res) => {
   debug(req.body);
-  (async function mongo() {
-    let client;
+  (async function mongoose() {
     let response;
     try {
-      client = await MongoClient.connect(url);
-      debug('Connected correctly to database');
-
-      const db = client.db(dbName);
-      const collection = db.collection('entries');
-
-      response = await collection.insertOne(req.body);
-      debug(response.ops);
-      res.json(response.ops);
+      response = await Entry.create(req.body)
+        .then((resp) => {
+          res.status(200).json(resp);
+        })
+        .catch((err) => {
+          debug(err.stack);
+          res.status(500).error(err);
+        })
     } catch (err) {
       debug(err.stack);
-      client.close();
     }
-    client.close();
   }())
 });
 
-app.put('/updateEntry', (req, res) => {
-  debug(req.body);
-  (async function mongo() {
-    let client;
-    let response;
-    try {
-      client = await MongoClient.connect(url);
-      debug('Connected correctly to database');
+// app.put('/updateEntry', (req, res) => {
+//   debug(req.body);
+//   (async function mongo() {
+//     let client;
+//     let response;
+//     try {
+//       client = await MongoClient.connect(localUrl);
+//       debug('Connected correctly to database');
 
-      const db = client.db(dbName);
-      const collection = db.collection('entries');
+//       const db = client.db(dbName);
+//       const collection = db.collection('entries');
 
-      response = await collection.updateOne(
-        { _id: new ObjectID(req.body._id) },
-        { $set: { 'name': req.body.name, 'notes': req.body.notes },
-          $currentDate: { lastModified: true } })
-        debug(response.message);
-        res.json(response);
-    } catch (err) {
-      debug(err.stack);
-      client.close();
-    }
-    client.close();
-  }())
-})
+//       response = await collection.updateOne(
+//         { _id: new ObjectID(req.body._id) },
+//         { $set: { 'name': req.body.name, 'notes': req.body.notes },
+//           $currentDate: { lastModified: true } })
+//         debug(response.message);
+//         res.json(response);
+//     } catch (err) {
+//       debug(err.stack);
+//       client.close();
+//     }
+//     client.close();
+//   }())
+// })
 
-app.delete('/deleteEntry', (req, res) => {
-  debug(req.body);
-  (async function mongo() {
-    debug('inside async mongo function');
-    let client;
-    let response;
-    try {
-      client = await MongoClient.connect(url);
-      debug('Connected correctly to database');
+// app.delete('/deleteEntry', (req, res) => {
+//   debug(req.body);
+//   (async function mongo() {
+//     debug('inside async mongo function');
+//     let client;
+//     let response;
+//     try {
+//       client = await MongoClient.connect(localUrl);
+//       debug('Connected correctly to database');
 
-      const db = client.db(dbName);
-      const collection = db.collection('entries');
+//       const db = client.db(dbName);
+//       const collection = db.collection('entries');
 
-      response = await collection.deleteOne({ _id: new ObjectID(req.body['_id']) })
-      debug(response.message);
-      res.json(response.message);
-    } catch(err) {
-      debug(err.stack);
-      client.close();
-    }
-    client.close();
-  }())
-});
+//       response = await collection.deleteOne({ _id: new ObjectID(req.body['_id']) })
+//       debug(response.message);
+//       res.json(response.message);
+//     } catch(err) {
+//       debug(err.stack);
+//       client.close();
+//     }
+//     client.close();
+//   }())
+// });
 
 const server = app.listen(process.env.PORT || 8080, () => {
   const port = server.address().port;
