@@ -1,7 +1,7 @@
 module.exports = [
-  { name: 'entry 1', createdDate: new Date('2018-01-01'), notes: 'Entry number 1' },
-  { name: 'entry 2', createdDate: new Date('2018-02-02'), notes: 'these are two notes' },
-  { name: 'entry 3', createdDate: new Date('2018-03-03'), notes: 'these are three notes' },
-  { name: 'entry 4', createdDate: new Date('2018-04-04'), notes: 'these are four notes' },
-  { name: 'entry 5', createdDate: new Date('2018-05-05'), notes: 'these are five notes' },
+  { name: 'Sample Entry', createdDate: new Date('2018-01-01'), notes: 'Welcome to My Journal App! It seems like it may be your first time here, so let me show you around.' },
+  { name: 'This is a journal entry', createdDate: new Date('2018-02-02'), notes: 'You can update the entry title and notes. Just click on \'update\' to my right!' },
+  { name: 'Excellent Job!', createdDate: new Date('2018-03-03'), notes: 'Not a fan of this entry? Just click on the \'delete\' button to my right and I will vanish.' },
+  { name: 'Want to add a new journal entry?', createdDate: new Date('2018-04-04'), notes: 'Of course you do. Simply click on the \'+\' icon on the upper left, and fill out the fields. Once you click save, your journal entry should appear at the bottom' },
+  { name: 'Looking for a specific entry?', createdDate: new Date('2018-05-05'), notes: 'There is a handy dandy search feature above. Just type in the text you\'re looking for, and I\'ll let you know what I find.' }
 ];

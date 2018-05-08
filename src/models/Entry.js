@@ -14,7 +14,7 @@ const EntrySchema = new Schema({
       type: Date
     },
     lastModified: {
-      default: new Date,
+      default: Date.now,
       type: Date
     },
     user: {
