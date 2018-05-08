@@ -31,6 +31,25 @@ mongooseDb.on('error', console.error.bind(console, 'MongoDB connection error:'))
 // const entriesRouter = require('./src/routes/entriesRouter');
 // app.use('/', entriesRouter);
 
+app.delete('/deleteEntry', (req, res) => {
+  debug(req.body);
+  (async function mongoose() {
+    let response;
+    try {
+      response = await Entry.findByIdAndRemove(req.body._id)
+        .then((resp) => {
+          res.status(200).json(resp);
+        })
+        .catch((err) => {
+          debug(err.stack);
+          res.status(500).error(err);
+        })
+    } catch(err) {
+      debug(err.stack);
+    }
+  }())
+});
+
 app.get('/entries', (req, res) => {
   (async function mongoose() {
     let response;
@@ -87,25 +106,6 @@ app.put('/updateEntry', (req, res) => {
           'lastModified': Date.now()
         }
       )
-        .then((resp) => {
-          res.status(200).json(resp);
-        })
-        .catch((err) => {
-          debug(err.stack);
-          res.status(500).error(err);
-        })
-    } catch(err) {
-      debug(err.stack);
-    }
-  }())
-});
-
-app.delete('/deleteEntry', (req, res) => {
-  debug(req.body);
-  (async function mongoose() {
-    let response;
-    try {
-      response = await Entry.findByIdAndRemove(req.body._id)
         .then((resp) => {
           res.status(200).json(resp);
         })
