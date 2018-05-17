@@ -2,6 +2,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const debug = require('debug')('app')
 const express = require('express')
+const helmet = require('helmet')
 const session = require('express-session')
 const fs = require('fs')
 const mongoose = require('mongoose')
@@ -14,6 +15,7 @@ const User = require('./src/models/User')
 
 const app = express()
 
+app.use(helmet())
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Credentials", true)
   res.setHeader('Access-Control-Allow-Origin', 'https://journal-app.surge.sh')
