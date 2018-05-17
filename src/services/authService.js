@@ -5,30 +5,25 @@ const User = require('../models/User')
 
 exports.authenticate_user = async(req, res) => {
   let response
-  debug(req.body)
-  const username = req.body.username
-  const password = req.body.password
-
-  try {
-    response = await User.findOne({ username: username })
-    debug(response)
-
-    if (response._id) {
-      const match = await bcrypt.compare(password, response.password)
-      if (match) {
-        debug('Matched!')
-        req.session.user = response
-        debug(req.session)
+  debug('authenticating user')
+  if (!req.session.user) {
+    res.clearCookie('user_id')
+    res.status(401).json({ username: '' })
+  } else {
+    try {
+      response = await User.findById(req.session.user._id)
+      debug(response)
+      if (response.username) {
         res.status(200).json({ username: response.username })
       } else {
-        res.status(401).send('Password is incorrect')
+        res.clearCookie('user_id')
+        res.status(404).json({ username: '' })
       }
-    } else {
-      res.status(404).send('Username not valid')
+    } catch(err) {
+      debug(err.stack)
+      res.status(500).json({ message: 'Service unavailable' })
     }
-  } catch(err) {
-    debug(err.stack)
-    res.status(401).send('User is not authenticated')
+
   }
 }
 
@@ -53,6 +48,35 @@ exports.authorize_user = async(req, res, next) => {
       debug(err.stack)
       res.status(401).send('Invalid user, please log in and try again')
     }
+  }
+}
+
+exports.login = async(req, res) => {
+  let response
+  debug(req.body)
+  const username = req.body.username
+  const password = req.body.password
+
+  try {
+    response = await User.findOne({ username: username })
+    debug(response)
+
+    if (response._id) {
+      const match = await bcrypt.compare(password, response.password)
+      if (match) {
+        debug('Matched!')
+        req.session.user = response
+        debug(req.session)
+        res.status(200).json({ username: response.username })
+      } else {
+        res.status(401).send('Password is incorrect')
+      }
+    } else {
+      res.status(404).send('Username not valid')
+    }
+  } catch(err) {
+    debug(err.stack)
+    res.status(401).send('User is not authenticated')
   }
 }
 

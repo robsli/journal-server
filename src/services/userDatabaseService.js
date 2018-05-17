@@ -35,3 +35,24 @@ exports.add_user = async(req, res) => {
     debug(err.stack)
   }
 }
+
+exports.update_user = async(req, res) => {
+  let response
+  debug(req.body)
+  try {
+    response = await User.findByIdAndUpdate(req.session.user,
+      {
+        'password': req.body.password
+      }
+    )
+    .then((response) => {
+      res.status(200).json({ message: 'User updated' })
+    })
+    .catch((err) => {
+      debug(err.stack)
+      res.status(500).error(err)
+    })
+  } catch(err) {
+    debug(err.stack)
+  }
+}
