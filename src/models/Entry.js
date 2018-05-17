@@ -18,8 +18,8 @@ const EntrySchema = new Schema({
       type: Date
     },
     user: {
-      ref: 'User',
-      type: Schema.ObjectId
+      required: true,
+      type: String
     }
   });
 

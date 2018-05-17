@@ -1,14 +1,17 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-const entry_controller = require('../controllers/entryController');
+const entry_controller = require('../controllers/entryController')
+const index_controller = require('../controllers/indexController')
 
-router.get('/entries', entry_controller.entry_list);
+router.get('/', entry_controller.entry_list)
 
-router.post('/addEntry', entry_controller.entry_add);
+router.get('/getEntries', index_controller.authorize_user, entry_controller.get_entries)
 
-router.put('/updateEntry', entry_controller.entry_update);
+router.post('/addEntry', index_controller.authorize_user, entry_controller.add_entry)
 
-router.delete('/deleteEntry', entry_controller.entry_delete);
+router.put('/updateEntry', index_controller.authorize_user, entry_controller.update_entry)
 
-module.exports = router;
+router.delete('/deleteEntry', index_controller.authorize_user, entry_controller.delete_entry)
+
+module.exports = router

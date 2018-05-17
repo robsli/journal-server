@@ -1,9 +1,11 @@
-const DatabaseService = require('../services/databaseService');
+const EntryDBService = require('../services/entryDatabaseService')
 
-exports.entry_list = DatabaseService.get_all_entries;
+exports.entry_list = EntryDBService.get_public_entries
 
-exports.entry_add = DatabaseService.add_entry;
+exports.get_entries = EntryDBService.get_entries
 
-exports.entry_update = DatabaseService.update_entry;
+exports.add_entry = EntryDBService.add_entry
 
-exports.entry_delete = DatabaseService.delete_entry;
+exports.update_entry = EntryDBService.update_entry
+
+exports.delete_entry = EntryDBService.delete_entry
