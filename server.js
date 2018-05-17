@@ -62,7 +62,7 @@ const sessionChecker = (req, res, next) => {
 const localUrl = 'mongodb://localhost:27017'
 const mlabUrl = 'mongodb://admin:test1234@ds161529.mlab.com:61529/journal-entries'
 
-mongoose.connect(localUrl)
+mongoose.connect(mlabUrl)
 mongoose.Promise = global.Promise
 const mongooseDb = mongoose.connection
 mongooseDb.on('error', console.error.bind(console, 'MongoDB connection error:'))
