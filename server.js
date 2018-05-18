@@ -15,10 +15,12 @@ const User = require('./src/models/User')
 
 const app = express()
 
+const client = 'dev'
+
 app.use(helmet())
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Credentials", true)
-  res.setHeader('Access-Control-Allow-Origin', 'https://journal-app.surge.sh')
+  res.setHeader('Access-Control-Allow-Origin', client === 'dev'? 'http://localhost:3000' : 'https://journal-app.surge.sh')
   res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, credentials")
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
   next()
@@ -32,9 +34,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: 250000,
+    expires: 3600000,
     httpOnly: false,
-    maxAge: 250000,
+    maxAge: 3600000,
     secure: false }
 }))
 app.use((req, res, next) => {
@@ -64,7 +66,7 @@ const sessionChecker = (req, res, next) => {
 const localUrl = 'mongodb://localhost:27017'
 const mlabUrl = 'mongodb://admin:test1234@ds161529.mlab.com:61529/journal-entries'
 
-mongoose.connect(mlabUrl)
+mongoose.connect(client === 'dev' ? localUrl : mlabUrl)
 mongoose.Promise = global.Promise
 const mongooseDb = mongoose.connection
 mongooseDb.on('error', console.error.bind(console, 'MongoDB connection error:'))
