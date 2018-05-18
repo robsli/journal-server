@@ -15,7 +15,7 @@ const User = require('./src/models/User')
 
 const app = express()
 
-const client = 'dev'
+const client = 'prod'
 
 app.use(helmet())
 app.use(function (req, res, next) {
