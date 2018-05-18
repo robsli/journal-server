@@ -1,6 +1,6 @@
 Express server for Journal Web App (https://github.com/robsli/journal-web-app)
 
-##To-do list:
+To-do list:
 
 - [ ] Write unit tests
 - [ ] Finish /deleteUser route and service
