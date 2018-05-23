@@ -35,7 +35,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     expires: 3600000,
-    httpOnly: false,
+    httpOnly: true,
     maxAge: 3600000,
     secure: false }
 }))
@@ -45,8 +45,8 @@ app.use((req, res, next) => {
   }
   next()
 })
-
 // Done with Auth stuff
+
 app.use(morgan('dev'))
 app.use(morgan('combined', {
   stream: fs.createWriteStream(path.join(__dirname, 'userActions.log'), { flags: 'a'})
@@ -71,13 +71,13 @@ mongoose.Promise = global.Promise
 const mongooseDb = mongoose.connection
 mongooseDb.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
-const entriesRoute = require('./src/routes/entries')
-const userRoute = require('./src/routes/user')
-const indexRoute = require('./src/routes/index')
+const entriesController = require('./src/controllers/entries')
+const userController = require('./src/controllers/user')
+const authController = require('./src/controllers/auth')
 
-app.use('/entries', entriesRoute)
-app.use('/user', userRoute)
-app.use('/', indexRoute)
+app.use('/entries', entriesController)
+app.use('/user', userController)
+app.use('/', authController)
 
 // TODO: Write tests, error handling
 
